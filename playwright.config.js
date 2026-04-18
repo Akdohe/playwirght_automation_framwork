@@ -1,45 +1,41 @@
 // @ts-check
-const  { defineConfig } = require('@playwright/test');
-
-module.exports = defineConfig({
-  
+import { defineConfig, devices } from '@playwright/test';
+/**
+ * @see https://playwright.dev/docs/test-configuration
+ */
+export default defineConfig({
   testDir: './tests',
-    /* Run tests in files in parallel */
+  /* Run tests in files in parallel */
   fullyParallel: true,
-  //retries after failure  retries: 1,
-  retries: 1,
-
-  //how many workers in parallel threads
-  workers: 2,
-
-  //reporte - shows the result in terminal HTML report
-   reporter: [['list'],['html',{open:'never'}]],
-
+  /* Fail the build on CI if you accidentally left test.only in the source code. */
+  forbidOnly: !!process.env.CI,
+  /* Retry on CI only */
+  reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    //use Base URl so you dont have to repeat the URL in every test
-    baseURL : 'https://the-internet.herokuapp.com',
-    
-    //take screenShots only when test fails
-    screenshot: 'only-on-failure',
+    /* Base URL to use in actions like `await page.goto('')`. */
+    // baseURL: 'http://localhost:3000',
 
-    //record video only test fails
-    video:  'retain-on-failure',
-
-    //browser widow size
-    viewport: { width: 1280, height: 720},
-
-    //highlight action in browser
-    headless: false,
+    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
+    trace: 'on-first-retry',
   },
-  
-  //runs test on chromium only for now
+
+  /* Configure projects for major browsers */
   projects: [
     {
       name: 'chromium',
-      use: {browserName: 'chromium'},
-     },
-     
+      use: { ...devices['Desktop Chrome'] },
+    },
+
+    {
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'] },
+    },
+
+    {
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'] },
+    },
   ],
 
 });
