@@ -1,21 +1,24 @@
 import 'dotenv/config';
 import { defineConfig } from '@playwright/test';
-// import * as dotenv from 'dotenv';
-
-// dotenv.config();
 
 export default defineConfig({
+  
   testDir: './tests',
   timeout: 15000,
   expect: {
     timeout: 5000,
   },
+  retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 1 : undefined,
+  fullyParallel: true,
 
   use: {
     baseURL: process.env.BASE_URL,
     headless: true,
-    testIdAttribute: 'data-test'
-  },
+    testIdAttribute: 'data-test',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
+    trace: 'on-first-retry',},
   projects: [{
     name: 'setup',
     testMatch: /.*\.setup\.ts/,
@@ -29,5 +32,7 @@ export default defineConfig({
     },
   ],
 
-  reporter: [['html']],
+  reporter: [['html'],
+  ['junit', { outputFile: 'results.xml' }],
+  ],
 });

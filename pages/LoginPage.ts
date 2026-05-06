@@ -1,4 +1,5 @@
 import {Page, expect} from "@playwright/test"
+import { ENV } from "../utils/envConfig";
 
 export class LoginPage {
     constructor(private page : Page){}
@@ -26,7 +27,7 @@ export class LoginPage {
     }
 
     async navigateToLoginPage(){
-        await this.page.goto('/');
+        await this.page.goto(ENV.BASE_URL);
         await expect(this.loginButton).toBeVisible();    
     }
 

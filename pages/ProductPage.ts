@@ -41,8 +41,6 @@ export class ProductPage {
         return this.page.getByTestId('back-to-products');
    }
 
-
-
     async addItemToCart(productName: string){
        const button = this.addToCartButton(productName);
        await expect(button).toBeVisible();
